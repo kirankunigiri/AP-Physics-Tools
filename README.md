@@ -23,7 +23,7 @@ let number2 = Uncertain(num: 0.67, uncertainty: 0.02)
 let resultAddition = number1 + number2
 let resultSubtraction = number1 - number2
 let resultMultiplication = number1 * number2
-let resultDivision2 = number1/number2
+let resultDivision = number1/number2
 ```
 
 With those calculations, you would get the following as output (as latex). To use this in Google Docs, get the [auto latex extension](https://chrome.google.com/webstore/detail/auto-latex-equations/iaainhiejkciadlhlodaajgbffkebdog) and you can convert the output into these beautiful equations!

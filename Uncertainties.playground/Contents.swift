@@ -176,7 +176,7 @@ let resultMultiplication = number1 * number2
 print("")
 
 print("Division")
-let resultDivision2 = number1/number2
+let resultDivision = number1/number2
 print("")
 
 
