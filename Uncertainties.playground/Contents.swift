@@ -3,6 +3,32 @@
 import Foundation
 
 
+
+extension Decimal {
+    var significantFractionalDecimalDigits: Int {
+        return max(-exponent, 0)
+    }
+}
+
+
+extension Double {
+    /// Rounds the double to decimal places value
+    func rounded(toPlaces places: Int) -> Double {
+        let divisor = pow(10.0, Double(places))
+        return (self * divisor).rounded() / divisor
+    }
+    
+    mutating func round(toPlaces places: Int) {
+        let divisor = pow(10.0, Double(places))
+        self = (self * divisor).rounded() / divisor
+    }
+    var numberOfDecimals: Int {
+        let decimal = Decimal(string: "\(self)")!
+        return decimal.significantFractionalDecimalDigits
+    }
+}
+
+
 // MARK: - Uncertain class
 
 /**
@@ -23,40 +49,45 @@ class Uncertain: CustomStringConvertible {
     
     class func add(_ a: Uncertain, _ b: Uncertain) -> Uncertain {
         let result = Uncertain(num: a.num + b.num, certainty: a.certainty + b.certainty)
-        print(result)
+        print("$$(\(a)) + (\(b)) = \(result)$$")
         return result
     }
     
     class func subtract(_ a: Uncertain, _ b: Uncertain) -> Uncertain {
         let result = Uncertain(num: a.num - b.num, certainty: a.certainty + b.certainty)
-        print(result)
+        print("$$(\(a)) - (\(b)) = \(result)$$")
         return result
     }
     
     class func multiply(_ a: Uncertain, _ b: Uncertain) -> Uncertain {
         // Calculations
-        let large = (a.num + a.certainty)*(b.num - b.certainty)
-        let small = (a.num - a.certainty)*(b.num + b.certainty)
-        let avgNum = (large + small)/2.0
-        let range = (large - small)
-        let result = Uncertain(num: avgNum, certainty: range/2.0)
+        var large = (a.num + a.certainty)*(b.num + b.certainty)
+        var small = (a.num - a.certainty)*(b.num - b.certainty)
+        var avgNum = (large + small)/2.0
+        var range = (large - small)
+        var uncertainty = range/2.0
         
-        // Print output
-        print("Calculations")
-        print("Largest result: \(large)")
-        print("Smallest result: \(small)")
-        print("Average result: \(avgNum)")
-        print("Range: \(range)")
-        print("Result: \(result)")
-        print("")
+        // Round numbers for display
+        let smallerUncertainty = max(a.certainty, b.certainty)
+        large.round(toPlaces: smallerUncertainty.numberOfDecimals + 2)
+        small.round(toPlaces: smallerUncertainty.numberOfDecimals + 2)
+        avgNum.round(toPlaces: smallerUncertainty.numberOfDecimals + 2)
+        range.round(toPlaces: smallerUncertainty.numberOfDecimals + 2)
         
         // Print latex
-        print("LATEX Output")
         print("$$Expression: (\(a.num!)\\pm\(a.certainty!))*(\(b.num!)\\pm\(b.certainty!))$$")
-        print("$$Largest \\ result = (\(a.num!)+\(a.certainty!))*(\(b.num!)-\(b.certainty!))=\(large)$$")
-        print("$$Smallest \\ result = (\(a.num!)-\(a.certainty!))*(\(b.num!)+\(b.certainty!))=\(small)$$")
+        print("$$Largest \\ result = (\(a.num!)+\(a.certainty!))*(\(b.num!)+\(b.certainty!))=\(large)$$")
+        print("$$Smallest \\ result = (\(a.num!)-\(a.certainty!))*(\(b.num!)-\(b.certainty!))=\(small)$$")
         print("$$Average \\ result = (\(large)+\(small))/(2)=\(avgNum)$$")
         print("$$Range \\ result = \(large)-\(small)=\(range)$$")
+        
+        // Round result
+        avgNum.round(toPlaces: smallerUncertainty.numberOfDecimals)
+        range.round(toPlaces: smallerUncertainty.numberOfDecimals)
+        uncertainty.round(toPlaces: smallerUncertainty.numberOfDecimals)
+        let result = Uncertain(num: avgNum, certainty: uncertainty)
+        
+        // Print result
         print("$$Result: \(result)$$")
         
         // Return
@@ -64,28 +95,33 @@ class Uncertain: CustomStringConvertible {
     }
     
     class func divide(_ a: Uncertain, _ b: Uncertain) -> Uncertain {
-        let large = (a.num + a.certainty)/(b.num - b.certainty)
-        let small = (a.num - a.certainty)/(b.num + b.certainty)
-        let avgNum = (large + small)/2.0
-        let range = (large - small)
-        let result = Uncertain(num: avgNum, certainty: range/2.0)
+        var large = (a.num + a.certainty)/(b.num - b.certainty)
+        var small = (a.num - a.certainty)/(b.num + b.certainty)
+        var avgNum = (large + small)/2.0
+        var range = (large - small)
+        var uncertainty = range/2.0
         
-        // Print output
-        print("Calculations")
-        print("Largest result: \(large)")
-        print("Smallest result: \(small)")
-        print("Average result: \(avgNum)")
-        print("Range: \(range)")
-        print("Result: \(result)")
-        print("")
+        // Round numbers for display
+        let smallerUncertainty = max(a.certainty, b.certainty)
+        large.round(toPlaces: smallerUncertainty.numberOfDecimals + 2)
+        small.round(toPlaces: smallerUncertainty.numberOfDecimals + 2)
+        avgNum.round(toPlaces: smallerUncertainty.numberOfDecimals + 2)
+        range.round(toPlaces: smallerUncertainty.numberOfDecimals + 2)
         
         // Print latex
-        print("LATEX Output")
         print("$$Expression: \\frac{\(a.num!)\\pm\(a.certainty!)}{\(b.num!)\\pm\(b.certainty!)}$$")
         print("$$Largest \\ result = \\frac{\(a.num!)+\(a.certainty!)}{\(b.num!)-\(b.certainty!)}=\(large)$$")
         print("$$Smallest \\ result = \\frac{\(a.num!)-\(a.certainty!)}{\(b.num!)+\(b.certainty!)}=\(small)$$")
         print("$$Average \\ result = \\frac{\(large)+\(small)}{2}=\(avgNum)$$")
         print("$$Range \\ result = \(large)-\(small)=\(range)$$")
+        
+        // Round result
+        avgNum.round(toPlaces: smallerUncertainty.numberOfDecimals)
+        range.round(toPlaces: smallerUncertainty.numberOfDecimals)
+        uncertainty.round(toPlaces: smallerUncertainty.numberOfDecimals)
+        let result = Uncertain(num: avgNum, certainty: uncertainty)
+        
+        // Print result
         print("$$Result: \(result)$$")
         
         // Return
@@ -97,10 +133,26 @@ class Uncertain: CustomStringConvertible {
         return "\(num!) \\pm \(certainty!)"
     }
     
-    // TODO: Override operators
-    
-    // TODO: Round results based on number of digits in number and uncertainty (highest number of digits) 
-    
+}
+
+
+
+// MARK: - Operator Overloading for Uncertain
+func +(left: Uncertain, right: Uncertain) -> Uncertain { // 1
+    return Uncertain.add(left, right)
+}
+
+func -(left: Uncertain, right: Uncertain) -> Uncertain { // 1
+    return Uncertain.subtract(left, right)
+}
+
+
+func *(left: Uncertain, right: Uncertain) -> Uncertain { // 1
+    return Uncertain.multiply(left, right)
+}
+
+func /(left: Uncertain, right: Uncertain) -> Uncertain { // 1
+    return Uncertain.divide(left, right)
 }
 
 
@@ -110,19 +162,19 @@ let number1 = Uncertain(num: 1.53, certainty: 0.05)
 let number2 = Uncertain(num: 0.67, certainty: 0.02)
 
 print("Addition")
-let resultAddition = Uncertain.add(number1, number2)
+let resultAddition2 = number1 + number2
 print("")
 
 print("Subtraction")
-let resultSubtraction = Uncertain.subtract(number1, number2)
+let resultSubtraction2 = number1 - number2
 print("")
 
-print("\nMultiplication\n")
-let resultMultiplication = Uncertain.multiply(number1, number2)
+print("Multiplication")
+let resultMultiplication2 = number1 * number2
 print("")
 
-print("\nDivision\n")
-let resultDivision = Uncertain.divide(number1, number2)
+print("Division")
+let resultDivision2 = number1/number2
 print("")
 
 
