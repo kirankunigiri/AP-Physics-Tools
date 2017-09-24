@@ -28,7 +28,7 @@ class AP_Physics_ToolsTests: XCTestCase {
         
         // Addition
         let resultAddition = number1 + number2
-        XCTAssertTrue(resultAddition.description == ".2 \\pm 0.07")
+        XCTAssertTrue(resultAddition.description == "2.2 \\pm 0.07")
         
         let resultSubtraction = number1 - number2
         XCTAssertTrue(resultSubtraction.description == "0.86 \\pm 0.07")

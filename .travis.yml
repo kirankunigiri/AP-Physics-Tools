@@ -2,5 +2,4 @@ language: objective-c
 osx_image: xcode9
 
 script:
-  - xcodebuild clean -project AP\ Physics\ Tools/AP\ Physics\ Tools.xcodeproj
-  - xcodebuild build -project AP\ Physics\ Tools/AP\ Physics\ Tools.xcodeproj -scheme AP\ Physics\ Tools CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+  - xcodebuild test -destination "platform=iOS Simulator,name=iPhone 7" -sdk iphonesimulator11.0 -project AP\ Physics\ Tools/AP\ Physics\ Tools.xcodeproj -scheme AP\ Physics\ Tools CODE_SIGNING_REQUIRED=NO
