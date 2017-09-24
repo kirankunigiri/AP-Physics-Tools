@@ -1,39 +1,19 @@
-//: Playground - noun: a place where people can play
+//
+//  Uncertainties.swift
+//  AP Physics Tools
+//
+//  Created by Kiran Kunigiri on 9/23/17.
+//  Copyright © 2017 Kiran Kunigiri. All rights reserved.
+//
 
 import Foundation
-
-
-
-extension Decimal {
-    var significantFractionalDecimalDigits: Int {
-        return max(-exponent, 0)
-    }
-}
-
-
-extension Double {
-    /// Rounds the double to decimal places value
-    func rounded(toPlaces places: Int) -> Double {
-        let divisor = pow(10.0, Double(places))
-        return (self * divisor).rounded() / divisor
-    }
-    
-    mutating func round(toPlaces places: Int) {
-        let divisor = pow(10.0, Double(places))
-        self = (self * divisor).rounded() / divisor
-    }
-    var numberOfDecimals: Int {
-        let decimal = Decimal(string: "\(self)")!
-        return decimal.significantFractionalDecimalDigits
-    }
-}
 
 
 // MARK: - Uncertain class
 
 /**
  Uncertain
- This class contains a number and its uncertainty. With them, you can 
+ This class contains a number and its uncertainty. With them, you can
  add, subtract, divide, and multiply uncertain numbers to produce a new
  number with the correct certainty.
  */
@@ -137,7 +117,39 @@ class Uncertain: CustomStringConvertible {
 
 
 
-// MARK: - Operator Overloading for Uncertain
+// MARK: - Decimal Extension
+extension Decimal {
+    var significantFractionalDecimalDigits: Int {
+        return max(-exponent, 0)
+    }
+}
+
+
+
+// MARK: - Double Extension
+extension Double {
+    
+    /** Rounds the double to decimal places value */
+//    func rounded(toPlaces places: Int) -> Double {
+//        let divisor = pow(10.0, Double(places))
+//        return (self * divisor).rounded() / divisor
+//    }
+    
+    /** Rounds a number to the given number of places */
+    mutating func round(toPlaces places: Int) {
+        let divisor = pow(10.0, Double(places))
+        self = (self * divisor).rounded() / divisor
+    }
+    
+    var numberOfDecimals: Int {
+        let decimal = Decimal(string: "\(self)")!
+        return decimal.significantFractionalDecimalDigits
+    }
+}
+
+
+
+// MARK: - Operator Overloading for the Uncertain class
 func +(left: Uncertain, right: Uncertain) -> Uncertain { // 1
     return Uncertain.add(left, right)
 }
@@ -154,32 +166,6 @@ func *(left: Uncertain, right: Uncertain) -> Uncertain { // 1
 func /(left: Uncertain, right: Uncertain) -> Uncertain { // 1
     return Uncertain.divide(left, right)
 }
-
-
-
-// MARK: - Tests
-let number1 = Uncertain(num: 1.53, uncertainty: 0.05)
-let number2 = Uncertain(num: 0.67, uncertainty: 0.02)
-
-print("Addition")
-let resultAddition = number1 + number2
-print(resultAddition.description)
-print("")
-
-print("Subtraction")
-let resultSubtraction = number1 - number2
-print(resultSubtraction.description)
-print("")
-
-print("Multiplication")
-let resultMultiplication = number1 * number2
-print(resultMultiplication.description)
-print("")
-
-print("Division")
-let resultDivision = number1/number2
-print(resultDivision.description)
-print("")
 
 
 
