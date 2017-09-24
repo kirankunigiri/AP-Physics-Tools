@@ -1,3 +1,4 @@
 language: objective-c
 xcode_project: AP Physics Tools/AP Physics Tools.xcodeproj # path to your xcodeproj folder
 xcode_scheme: AP Physics Tools
+osx_image: xcode9
