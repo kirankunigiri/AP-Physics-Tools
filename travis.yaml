@@ -1,0 +1,3 @@
+language: swift
+xcode_project: AP Physics Tools/AP Physics Tools.xcodeproj # path to your xcodeproj folder
+xcode_scheme: AP Physics Tools
